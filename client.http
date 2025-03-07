@@ -1,0 +1,10 @@
+@BASE_URL = http://localhost:3000
+
+GET {{BASE_URL}}/customers
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "johndoe@gmail.com",
+    "phone": "1234567890"
+}

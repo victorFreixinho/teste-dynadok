@@ -1,0 +1,74 @@
+services:
+  mongo-dynadok:
+    image: mongo:latest
+    container_name: mongo-dynadok
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo-dynadok
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpassword
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo-dynadok
+    networks:
+      - app-network
+  
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=adminpassword
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+  
+  app-dynadok:
+    build: .
+    image: app-dynadok
+    container_name: app-dynadok
+    tty: true
+    volumes:
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    depends_on:
+      - mongo-dynadok
+      - redis
+      - rabbitmq
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

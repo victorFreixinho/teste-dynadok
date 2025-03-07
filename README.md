@@ -1,102 +1,49 @@
-**Proposta de Teste Prático para Desenvolvedor Pleno/Sênior**  
-_(Focado em Clean Architecture, SOLID e boas práticas com Docker, Redis, Mensageria, etc.)_
+### Informações gerais do projeto:
 
----
+- Arquitetura escolhida: Arquitetura Hexagonal (ports and adapters);
+- Implementado todos os requisitos técnicos, inclusive o bônus;
+- O côdigo ainda tem melhorias e ajustes para serem feitos (melhorar o docker-compose e os testes, estilização com prettier/eslint/husky, documentação da api com swagger, etc). Porém, foi o que consegui fazer em menos de 10h, respeitando o limite do prazo passado para mim.
 
-### Escopo Geral
 
-Você deverá implementar um **serviço de cadastro e consulta de clientes** que atenda aos seguintes requisitos:
+### Como subir a aplicação e serviços via Docker?
 
-1. **API (REST)** para:
+Basta rodar ```docker-compose up --build```. Com isso ele irá iniciar localmente toda a infraestrutura, juntamente com a aplicação node, em modo dev.
 
-   - **Cadastrar** um cliente.
-   - **Atualizar** dados de um cliente.
-   - **Consultar** detalhes de um cliente por ID.
-   - **Listar** todos os clientes.
+### Endpoints disponíveis e como chamá-los
 
-2. **Banco de Dados**:
+Os endpoints são basicamente o CRUD de Custumer:
 
-   - Usar **MongoDB** para armazenar as informações de cliente:
-     - A entidade **Cliente** deve conter ao menos:
-       - `nome` (string)
-       - `email` (string)
-       - `telefone` (string)
+- Cadastrar cliente: /custumers  **[POST]**
 
-3. **Cache**:
+Exemplo de body:
 
-   - Usar **Redis** para cachear informações de cliente nas consultas (por exemplo, no endpoint de consulta por ID).
+```
+{
+    "name": "John Doe",
+    "email": "johndoe@gmail.com",
+    "phone": "1234567890"
+}
+```
 
-4. **Mensageria**:
+- Listar clientes: /custumers  **[GET]**
 
-   - Crie um fluxo (mesmo que simplificado) de produção e consumo de mensagens.
-   - Exemplo: quando um novo cliente for cadastrado, envie uma mensagem para uma fila/tópico e crie um consumidor que processe essa mensagem (pode ser algo simples, como registrar um log ou persistir alguma informação adicional).
+- Consultar cliente: /custumers/:id  **[GET]**
 
-5. **Clean Architecture**:
+- Atualizar cliente: /custumers/:id  **[PUT]**
 
-   - **Obrigatório** utilizar uma estrutura de camadas, seguindo princípios de Clean Architecture e SOLID.
-   - Deve conter **controllers**, **repositórios** e **entidades**, de forma clara e separada.
-   - Criar uma entidade base (`BaseEntity`, por exemplo), que pode conter campos genéricos (ID, datas de criação/atualização, etc.).
-   - Criar um repositório base (`BaseRepository`, por exemplo), que contenha métodos genéricos de CRUD.
+Exemplo de body:
 
-6. **Docker**:
+```
+{
+    "id": "123",
+    "name": "John Doe",
+    "email": "johndoe@gmail.com",
+    "phone": "1234567890"
+}
+```
 
-   - Crie um arquivo `Dockerfile` e/ou `docker-compose.yml` para executar a aplicação, o banco de dados, o Redis e a mensageria (Kafka, RabbitMQ etc.).
+- Deletar cliente: /custumers/:id  **[DELETE]**
 
-7. **Bônus (opcional, mas valorizado)**:
-   - **Testes Unitários**: escreva testes unitários para os serviços e repositórios.
-   - **CI/CD**: demonstre como configuraria, mesmo que de forma simplificada, um pipeline de build e testes.
+###  Como rodar os testes?
 
----
-
-### Requisitos Técnicos
-
-- **Linguagem/Framework**:
-  - **Node.js** (TypeScript + Express.js)
-- **Banco de Dados**:
-  - **MongoDB** (executado via Docker para facilitar testes locais).
-- **Cache**:
-  - **Redis**.
-- **Mensageria**:
-  - **Kafka**, **RabbitMQ** ou outro que domine.
-- **Arquitetura**:
-  - **Clean Architecture** (domínio, repositórios, use-cases, controllers),
-  - Princípios **SOLID**,
-  - Entidades base como `BaseEntity`
-  - Repositórios base como `BaseRepository`.
-- **Containerização**:
-  - **Docker** e `docker-compose` para rodar a aplicação, banco, cache e mensageria.
-- **Testes**:
-  - Ao menos **testes unitários** nos serviços e repositórios.
-- **Documentação**:
-  - Um pequeno **README.md** explicando como rodar a aplicação, os testes e descrevendo a arquitetura.
-
----
-
-### O que será Avaliado
-
-1. **Estrutura de pastas** do projeto e aplicação de padrões arquiteturais (Clean Architecture).
-2. **Qualidade e organização do código** (legibilidade, separação de responsabilidades, tratamento de erros, logs, etc.).
-3. **Uso correto das tecnologias** (Node/Python, Redis, MongoDB, mensageria).
-4. **Boas práticas** (SOLID, uso de entidades base, repositórios base, testes).
-5. **Como lida com escalabilidade** (caching, mensageria).
-6. **Facilidade de execução** (scripts, instruções de uso, Docker).
-7. **Documentação** (README e clareza dos passos).
-
----
-
-### Entrega
-
-- **Repositório** (no GitHub) contendo:
-  1. Código fonte da aplicação.
-  2. `Dockerfile` e `docker-compose.yml`.
-  3. Scripts de inicialização (se necessários).
-  4. `README.md` explicando:
-     - Como subir a aplicação e serviços via Docker.
-     - Endpoints disponíveis e como chamá-los.
-     - Como rodar os testes.
-
----
-
-### Dicas e Observações
-
-- **Foque na qualidade** do que for desenvolvido (estrutura e código limpo).
+```npm run test```
