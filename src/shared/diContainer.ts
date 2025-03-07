@@ -1,0 +1,40 @@
+import { Container } from "inversify";
+import { CustomerController } from "../adapters/http/controllers/CustomerController";
+import { DiTokens } from "./DiTokens";
+import { CreateCustomerUseCase, ListCustomersUseCase, GetCustomerUseCase, UpdateCustomerUseCase } from "../ports/input/customer";
+import { CreateCustomerUseCaseImpl } from "../domain/customer/usecases/CreateCustomerUseCaseImpl";
+import { DeleteCustomerUseCase } from "../ports/input/customer/usecases/DeleteCustomerUseCase";
+import { GetCustomerUseCaseImpl } from "../domain/customer/usecases/GetCustomerUseCaseImpl";
+import { ListCustomersUseCaseImpl } from "../domain/customer/usecases/ListCustomersUseCaseImpl";
+import { UpdateCustomerUseCaseImpl } from "../domain/customer/usecases/UpdateCustomerUseCaseImpl";
+import { DeleteCustomerUseCaseImpl } from "../domain/customer/usecases/DeleteCustomerUseCaseImpl";
+import { CustomerService } from "../domain/customer/services/CustomerService";
+import { CustomerServiceImpl } from "../domain/customer/services/CustomerServiceImpl";
+import { CustomerPersistence } from "../ports/output/database/customer";
+import { CustomerPersistenceImpl } from "../adapters/database/customer/CustomerPersistenceImpl";
+import { CustomerRepository } from "../adapters/database/customer/CustomerRepository";
+import { CustomerRepositoryImpl } from "../adapters/database/customer/CustomerRepositoryImpl";
+import { CustomerModel } from "../adapters/database/customer/CustomerModel";
+import { CacheManagerImpl } from "../adapters/cache/CacheManagerImpl";
+import { CacheManager } from "../ports/output/cache/CacheManager";
+import { MessagingManager } from "../ports/output/messaging/MessagingManager";
+import { MessagingManagerImpl } from "../adapters/messaging/MessagingManagerImpl";
+import RabbitMQ from "../adapters/messaging/RabbitMQ";
+
+const diContainer = new Container();
+
+diContainer.bind<CustomerController>(DiTokens.CustomerController).to(CustomerController).inSingletonScope();
+diContainer.bind<CreateCustomerUseCase>(DiTokens.CreateCustomerUseCase).to(CreateCustomerUseCaseImpl).inSingletonScope();
+diContainer.bind<GetCustomerUseCase>(DiTokens.GetCustomerUseCase).to(GetCustomerUseCaseImpl).inSingletonScope();
+diContainer.bind<ListCustomersUseCase>(DiTokens.ListCustomersUseCase).to(ListCustomersUseCaseImpl).inSingletonScope();
+diContainer.bind<UpdateCustomerUseCase>(DiTokens.UpdateCustomerUseCase).to(UpdateCustomerUseCaseImpl).inSingletonScope();
+diContainer.bind<DeleteCustomerUseCase>(DiTokens.DeleteCustomerUseCase).to(DeleteCustomerUseCaseImpl).inSingletonScope();
+diContainer.bind<CustomerService>(DiTokens.CustomerService).to(CustomerServiceImpl).inSingletonScope();
+diContainer.bind<CustomerPersistence>(DiTokens.CustomerPersistence).to(CustomerPersistenceImpl).inSingletonScope();
+diContainer.bind<CustomerRepository>(DiTokens.CustomerRepository).to(CustomerRepositoryImpl).inSingletonScope();
+diContainer.bind(DiTokens.CustomerModel).toConstantValue(CustomerModel);
+diContainer.bind<CacheManager>(DiTokens.CacheManager).to(CacheManagerImpl).inSingletonScope();
+diContainer.bind<MessagingManager>(DiTokens.MessagingManager).to(MessagingManagerImpl).inSingletonScope();
+diContainer.bind(DiTokens.RabbitMQ).toConstantValue(RabbitMQ);
+
+export default diContainer;
